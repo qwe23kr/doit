@@ -4,11 +4,11 @@ import lombok.Data;
 
 @Data
 public class UserInfoVO {
-
+	private int[] uiNums;
 	private String cmd;
 	private int uiNum;
-	private int uiAge;
 	private String uiName;
+	private int uiAge;
 	private String uiBirth;
 	private String uiId;
 	private String uiPassword;

@@ -1,4 +1,3 @@
-  
 package com.boot.servlet;
 
 import java.io.BufferedReader;
@@ -30,6 +29,8 @@ public class UserServlet extends HttpServlet {
 		if("checkID".equals(cmd)) {
 			String uiId = request.getParameter("uiId");
 			result.put("result", userService.checkUserId(uiId));
+		}else if("list".equals(cmd)) {
+			result.put("list", userService.selectUserList(null));
 		}
 		PrintWriter pw = response.getWriter();
 		pw.println(gson.toJson(result));
@@ -42,20 +43,23 @@ public class UserServlet extends HttpServlet {
 		while((str=br.readLine())!=null) {
 			sb.append(str);
 		}
-		
-		UserInfoVO user= gson.fromJson(sb.toString(), UserInfoVO.class);
+		UserInfoVO user = gson.fromJson(sb.toString(), UserInfoVO.class);
+		System.out.println(user);
 		Map<String,Object> result = new HashMap<>();
+		
 		if("login".equals(user.getCmd())) {
-			result.put("result",userService.doLogin(user,request.getSession()));
+			result.put("result", userService.doLogin(user, request.getSession()));
 		}else if("signup".equals(user.getCmd())) {
-			result.put("result",userService.insertUser(user));
+			result.put("result", userService.insertUser(user));
 		}else if("logout".equals(user.getCmd())) {
 			request.getSession().invalidate();
-			result.put("result",true);
+			result.put("result", true);
 		}else if("modify".equals(user.getCmd())) {
-			result.put("result",userService.updateUser(user,request.getSession()));
+			result.put("result", userService.updateUser(user, request.getSession()));
 		}else if("deleteAccount".equals(user.getCmd())) {
 			result.put("result", userService.deleteUser(user, request.getSession()));
+		}else if("deleteUsers".equals(user.getCmd())) {
+			result.put("result", userService.deleteUsers(user.getUiNums()));
 		}
 		
 		String json = gson.toJson(result);

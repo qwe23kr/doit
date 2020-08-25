@@ -4,9 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
-
-import org.eclipse.jdt.internal.compiler.batch.Main;
 
 import com.boot.dao.UserInfoDAO;
 import com.boot.servlet.InitServlet;
@@ -151,10 +150,39 @@ public class UserInfoDAOImpl implements UserInfoDAO {
 
 	@Override
 	public List<UserInfoVO> selectUserList(UserInfoVO user) {
-		// TODO Auto-generated method stub
-		return null;
+		List<UserInfoVO> userList = new ArrayList<>();
+		String sql = "select ui_num,ui_name,ui_num, ui_age, ui_birth,\r\n" + "ui_id, ui_password,ui_phone,ui_email,\r\n"
+				+ "ui_credat,ui_nickname,ui_credat,ui_admin from user_info";
+		Connection con = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			con = InitServlet.getConnection();
+			ps = con.prepareStatement(sql);
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				UserInfoVO ui = new UserInfoVO();
+				ui.setUiNum(rs.getInt("ui_num"));
+				ui.setUiName(rs.getString("ui_name"));
+				ui.setUiAge(rs.getInt("ui_age"));
+				ui.setUiId(rs.getString("ui_id"));
+				ui.setUiBirth(rs.getString("ui_birth"));
+				ui.setUiPhone(rs.getString("ui_phone"));
+				ui.setUiNickname(rs.getString("ui_nickname"));
+				ui.setUiCredat(rs.getString("ui_credat"));
+				ui.setUiEmail(rs.getString("ui_email"));
+				ui.setUiPassword(rs.getString("ui_password"));
+				ui.setUiAdmin(rs.getString("ui_admin"));
+				userList.add(ui);
+			}
+		} catch (SQLException sqle) {
+			sqle.printStackTrace();
+		} finally {
+			InitServlet.close(rs, ps, con);
+		}
+		return userList;
 	}
-
+	
 	@Override
 	public UserInfoVO selectUserForLogin(UserInfoVO user) {
 		String sql = "select * from user_info where ui_id=? and ui_password=?";
@@ -222,5 +250,4 @@ public class UserInfoDAOImpl implements UserInfoDAO {
 		}
 		return null;
 	}
-
 }
